@@ -34,14 +34,12 @@ We anticipate the code will be out * **in one week** *. -->
   - [SimCSE Elsewhere](#simcse-elsewhere)
 
 ## Overview
-
-We propose a simple contrastive learning framework that works with both unlabeled and labeled data. Unsupervised SimCSE simply takes an input sentence and predicts itself in a contrastive learning framework, with only standard dropout used as noise. Our supervised SimCSE incorporates annotated pairs from NLI datasets into contrastive learning by using `entailment` pairs as positives and `contradiction` pairs as hard negatives. The following figure is an illustration of our models.
+我们提出了一个简单的对比性学习框架，该框架同时适用于无标签和有标签的数据。无监督的SimCSE只需要一个输入句子，并在一个对比学习框架中预测自己，只用标准的dropout作为噪音。我们的有监督的SimCSE通过使用 "entailment "对作为正例，"contradiction "对作为困难性负样本，将来自NLI数据集的标注对纳入对比学习。下图是我们模型的说明。
 
 ![](figure/model.png)
 
 ## Getting Started
-
-We provide an easy-to-use sentence embedding tool based on our SimCSE model (see our [Wiki](https://github.com/princeton-nlp/SimCSE/wiki) for detailed usage). To use the tool, first install the `simcse` package from PyPI
+我们在SimCSE模型的基础上提供了一个易于使用的句子嵌入工具（详细用法见我们的[Wiki]（https://gi thub.com/princeton-nlp/SimCSE/wiki））。要使用该工具，首先要从PyPI安装`simcse`包
 ```bash
 pip install simcse
 ```
@@ -50,44 +48,41 @@ Or directly install it from our code
 ```bash
 python setup.py install
 ```
-
-Note that if you want to enable GPU encoding, you should install the correct version of PyTorch that supports CUDA. See [PyTorch official website](https://pytorch.org) for instructions.
-
-After installing the package, you can load our model by just two lines of code
+请注意，如果您想启用GPU编码，您应该安装支持CUDA的正确版本的PyTorch。请参阅[PyTorch官方网站](https://pytorch.org)了解相关说明。
+安装完软件包后，你可以通过两行代码加载我们的模型
 ```python
 from simcse import SimCSE
 model = SimCSE("princeton-nlp/sup-simcse-bert-base-uncased")
 ```
 See [model list](#model-list) for a full list of available models. 
-
-Then you can use our model for **encoding sentences into embeddings**
+然后你可以使用我们的模型来**将句子编码为嵌入**。
 ```python
 embeddings = model.encode("A woman is reading.")
 ```
 
-**Compute the cosine similarities** between two groups of sentences
+**计算两组句子之间的余弦相似度**。
 ```python
 sentences_a = ['A woman is reading.', 'A man is playing a guitar.']
 sentences_b = ['He plays guitar.', 'A woman is making a photo.']
 similarities = model.similarity(sentences_a, sentences_b)
 ```
 
-Or build index for a group of sentences and **search** among them
+或者为一组句子建立索引并在其中**搜索
 ```python
 sentences = ['A woman is reading.', 'A man is playing a guitar.']
 model.build_index(sentences)
 results = model.search("He plays guitar.")
 ```
 
-We also support [faiss](https://github.com/facebookresearch/faiss), an efficient similarity search library. Just install the package following [instructions](https://github.com/princeton-nlp/SimCSE/wiki/Installation) here and `simcse` will automatically use `faiss` for efficient search.
+我们也支持[faiss](https://gi thub.com/facebookresearch/faiss)，一个高效的相似度搜索库。只要按照这里的[说明](https://gi thub.com/princeton-nlp/SimCSE/wiki/Installation)安装软件包，`simcse`将自动使用`faiss`进行高效搜索。
 
-**WARNING**: We have found that `faiss` did not well support Nvidia AMPERE GPUs (3090 and A100). In that case, you should change to other GPUs or install the CPU version of `faiss` package.
-
-We also provide an easy-to-build [demo website](./demo) to show how SimCSE can be used in sentence retrieval. The code is based on [DensePhrases](https://arxiv.org/abs/2012.12624)' [repo](https://github.com/princeton-nlp/DensePhrases) and [demo](http://densephrases.korea.ac.kr) (a lot of thanks to the authors of DensePhrases). 
+**警告**。我们发现`faiss`不能很好地支持Nvidia AMPERE GPU（3090和A100）。在这种情况下，你应该改用其他GPU或安装CPU版本的`faiss`包。
+我们还提供了一个易于构建的[演示网站](./demo)来展示SimCSE如何用于句子检索。该代码基于[DensePhrases](https://arxiv.org/abs/2012.12624)' 
+[repo](https://github.com/princeton-nlp/DensePhrases)和[demo](http://densephrases.korea.ac.kr)（非常感谢DensePhrases的作者）。
 
 ## Model List
+我们已经发布的模型列举如下。你可以通过使用`simcse`包或使用[HuggingFace's Transformers]（https://gi thub.com/huggingface/transformers）导入这些模型。
 
-Our released models are listed as following. You can import these models by using the `simcse` package or using [HuggingFace's Transformers](https://github.com/huggingface/transformers). 
 |              Model              | Avg. STS |
 |:-------------------------------|:--------:|
 |  [princeton-nlp/unsup-simcse-bert-base-uncased](https://huggingface.co/princeton-nlp/unsup-simcse-bert-base-uncased) |   76.25 |
@@ -99,13 +94,12 @@ Our released models are listed as following. You can import these models by usin
 |     [princeton-nlp/sup-simcse-roberta-base](https://huggingface.co/princeton-nlp/sup-simcse-roberta-base)     |   82.52  |
 |     [princeton-nlp/sup-simcse-roberta-large](https://huggingface.co/princeton-nlp/sup-simcse-roberta-large)    |   83.76  |
 
-Note that the results are slightly better than what we have reported in the current version of the paper after adopting a new set of hyperparameters (for hyperparamters, see the [training](#training) section).
-
-**Naming rules**: `unsup` and `sup` represent "unsupervised" (trained on Wikipedia corpus) and "supervised" (trained on NLI datasets) respectively.
+请注意，在采用了一组新的超参数（关于超参数，见[训练](#训练)部分）后，结果比我们在当前版本的论文中报告的要好一点。
+**命名规则**。`unsup`和`sup`分别代表 "无监督"（在维基百科语料库上训练）和 "有监督"（在NLI数据集中训练）。
 
 ## Use SimCSE with Huggingface
+除了使用我们提供的句子嵌入工具，你也可以用HuggingFace的 "transformer "轻松导入我们的模型。
 
-Besides using our provided sentence embedding tool, you can also easily import our models with HuggingFace's `transformers`:
 ```python
 import torch
 from scipy.spatial.distance import cosine
@@ -136,43 +130,44 @@ print("Cosine similarity between \"%s\" and \"%s\" is: %.3f" % (texts[0], texts[
 print("Cosine similarity between \"%s\" and \"%s\" is: %.3f" % (texts[0], texts[2], cosine_sim_0_2))
 ```
 
-If you encounter any problem when directly loading the models by HuggingFace's API, you can also download the models manually from the above table and use `model = AutoModel.from_pretrained({PATH TO THE DOWNLOAD MODEL})`.
+如果你在通过HuggingFace的API直接加载模型时遇到任何问题，你也可以从上表手动下载模型，并使用`model = AutoModel.from_pretrained({PATH TO THE DOWNLOAD MODEL})`。
 
 ## Train SimCSE
-
-In the following section, we describe how to train a SimCSE model by using our code.
+在下一节中，我们将描述如何通过使用我们的代码来训练一个SimCSE模型。
 
 ### Requirements
-
-First, install PyTorch by following the instructions from [the official website](https://pytorch.org). To faithfully reproduce our results, please use the correct `1.7.1` version corresponding to your platforms/CUDA versions. PyTorch version higher than `1.7.1` should also work. For example, if you use Linux and **CUDA11** ([how to check CUDA version](https://varhowto.com/check-cuda-version/)), install PyTorch by the following command,
+首先，按照[官方网站](https://pytorch.org)的说明安装PyTorch。为了忠实地再现我们的结果，
+请使用与您的平台/CUDA版本相对应的正确的`1.7.1`版本。高于`1.7.1`的PyTorch版本也应该可以工作。
+例如，如果您使用Linux和**CUDA11**（[如何检查CUDA版本](https://varhowto.com/check-cuda-version/)），请通过以下命令安装PyTorch。
 
 ```bash
 pip install torch==1.7.1+cu110 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-If you instead use **CUDA** `<11` or **CPU**, install PyTorch by the following command,
+如果您使用的是**CUDA**`<11`或**CPU**，请通过以下命令安装PyTorch。
 
 ```bash
 pip install torch==1.7.1
 ```
 
 
-Then run the following script to install the remaining dependencies,
+然后运行下面的脚本来安装其余的依赖项。
 
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Evaluation
-Our evaluation code for sentence embeddings is based on a modified version of [SentEval](https://github.com/facebookresearch/SentEval). It evaluates sentence embeddings on semantic textual similarity (STS) tasks and downstream transfer tasks. For STS tasks, our evaluation takes the "all" setting, and report Spearman's correlation. See [our paper](https://arxiv.org/pdf/2104.08821.pdf) (Appendix B) for evaluation details.
+我们对句子嵌入的评估代码是基于[SentEval](https://github.com/facebookresearch/SentEval)的修改版。
+它在语义文本相似性（STS）任务和下游迁移任务中对句子嵌入进行评估。对于STS任务，我们的评估采用 "全部 "设置，并报告Spearman的相关度。评估细节见[我们的论文](https://arxiv.org/pdf/2104.08821.pdf)（附录B）。
 
-Before evaluation, please download the evaluation datasets by running
+在评估之前，请通过运行以下程序下载评估数据集
 ```bash
 cd SentEval/data/downstream/
 bash download_dataset.sh
 ```
+然后回到根目录，你可以使用我们的评估代码评估任何基于`transformers`的预训练模型。比如说。
 
-Then come back to the root directory, you can evaluate any `transformers`-based pre-trained models using our evaluation code. For example,
 ```bash
 python evaluation.py \
     --model_name_or_path princeton-nlp/sup-simcse-bert-base-uncased \
@@ -180,7 +175,8 @@ python evaluation.py \
     --task_set sts \
     --mode test
 ```
-which is expected to output the results in a tabular format:
+预计它将以表格的形式输出结果。
+
 ```
 ------ test ------
 +-------+-------+-------+-------+-------+--------------+-----------------+-------+
@@ -189,53 +185,51 @@ which is expected to output the results in a tabular format:
 | 75.30 | 84.67 | 80.19 | 85.40 | 80.82 |    84.26     |      80.39      | 81.58 |
 +-------+-------+-------+-------+-------+--------------+-----------------+-------+
 ```
+评估脚本的参数如下。
 
-Arguments for the evaluation script are as follows,
-
-* `--model_name_or_path`: The name or path of a `transformers`-based pre-trained checkpoint. You can directly use the models in the above table, e.g., `princeton-nlp/sup-simcse-bert-base-uncased`.
-* `--pooler`: Pooling method. Now we support
-    * `cls` (default): Use the representation of `[CLS]` token. A linear+activation layer is applied after the representation (it's in the standard BERT implementation). If you use **supervised SimCSE**, you should use this option.
-    * `cls_before_pooler`: Use the representation of `[CLS]` token without the extra linear+activation. If you use **unsupervised SimCSE**, you should take this option.
-    * `avg`: Average embeddings of the last layer. If you use checkpoints of SBERT/SRoBERTa ([paper](https://arxiv.org/abs/1908.10084)), you should use this option.
-    * `avg_top2`: Average embeddings of the last two layers.
-    * `avg_first_last`: Average embeddings of the first and last layers. If you use vanilla BERT or RoBERTa, this works the best.
-* `--mode`: Evaluation mode
-    * `test` (default): The default test mode. To faithfully reproduce our results, you should use this option.
-    * `dev`: Report the development set results. Note that in STS tasks, only `STS-B` and `SICK-R` have development sets, so we only report their numbers. It also takes a fast mode for transfer tasks, so the running time is much shorter than the `test` mode (though numbers are slightly lower).
-    * `fasttest`: It is the same as `test`, but with a fast mode so the running time is much shorter, but the reported numbers may be lower (only for transfer tasks).
-* `--task_set`: What set of tasks to evaluate on (if set, it will override `--tasks`)
-    * `sts` (default): Evaluate on STS tasks, including `STS 12~16`, `STS-B` and `SICK-R`. This is the most commonly-used set of tasks to evaluate the quality of sentence embeddings.
-    * `transfer`: Evaluate on transfer tasks.
-    * `full`: Evaluate on both STS and transfer tasks.
-    * `na`: Manually set tasks by `--tasks`.
-* `--tasks`: Specify which dataset(s) to evaluate on. Will be overridden if `--task_set` is not `na`. See the code for a full list of tasks.
+* `--model_name_or_path`: 基于 "transformer "的预训练checkpoint的名称或路径。你可以直接使用上表中的模型, e.g., `princeton-nlp/sup-simcse-bert-base-uncased`.
+* `--pooler`: 池化方法。现在我们支持
+    * `cls` (default): 使用`[CLS]`token的表示。在表示之后应用一个线性+激活层（它在标准的BERT实现中）。如果你使用**监督的SimCSE**，你应该使用这个选项。
+    * `cls_before_pooler`: 使用`[CLS]`token的表示法，没有额外的线性+激活。如果你使用**无监督的SimCSE**，你应该采取这个选项。
+    * `avg`: 最后一层的平均嵌入值。如果你使用SBERT/RoBERTa的checkpoint（[论文](https://arxiv.org/abs/1908.10084)），你应该使用这个选项。
+    * `avg_top2`: 最后两层的平均嵌入量。
+    * `avg_first_last`: 第一层和最后一层的平均嵌入值。如果你使用vanilla BERT或RoBERTa，这个效果最好。
+* `--mode`: 评估模式
+    * `test` (默认)。默认的测试模式。为了忠实地再现我们的结果，你应该使用这个选项。
+    * `dev`: 报告开发集的结果。注意，在STS任务中，只有`STS-B`和`SICK-R`有开发集，所以我们只报告它们的数字。它还采取快速模式进行迁移任务，所以运行时间比`测试`模式短得多（尽管数字略低）。
+    * `fasttest`: 它与`test`相同，但有一个快速模式，所以运行时间更短，但报告的数字可能更低（只针对迁移任务）。
+* `--task_set`: 对哪一组任务进行评估（如果设置，它将覆盖`--tasks`）。
+    * `sts` (默认): 在STS任务上进行评估，包括`STS 12~16`、`STS-B`和`SICK-R`。这是评估句子嵌入质量的最常用的任务集。
+    * `transfer`: 对迁移任务进行评估。
+    * `full`: 对STS和迁移任务进行评估。
+    * `na`: 通过`--tasks`手动设置任务。
+* `--tasks`: 指定要评估的数据集。如果`--task_set`不是`na`，将被重写。完整的任务列表见代码。
 
 ### Training
 
 **Data**
-
-For unsupervised SimCSE, we sample 1 million sentences from English Wikipedia; for supervised SimCSE, we use the SNLI and MNLI datasets. You can run `data/download_wiki.sh` and `data/download_nli.sh` to download the two datasets.
+对于无监督的SimCSE，我们从英语维基百科中抽取100万个句子；对于有监督的SimCSE，我们使用SNLI和MNLI数据集。你可以运行`data/download_wiki.sh`和`data/download_nli.sh`来下载这两个数据集。
 
 **Training scripts**
-
-We provide example training scripts for both unsupervised and supervised SimCSE. In `run_unsup_example.sh`, we provide a single-GPU (or CPU) example for the unsupervised version, and in `run_sup_example.sh` we give a **multiple-GPU** example for the supervised version. Both scripts call `train.py` for training. We explain the arguments in following:
-* `--train_file`: Training file path. We support "txt" files (one line for one sentence) and "csv" files (2-column: pair data with no hard negative; 3-column: pair data with one corresponding hard negative instance). You can use our provided Wikipedia or NLI data, or you can use your own data with the same format.
-* `--model_name_or_path`: Pre-trained checkpoints to start with. For now we support BERT-based models (`bert-base-uncased`, `bert-large-uncased`, etc.) and RoBERTa-based models (`RoBERTa-base`, `RoBERTa-large`, etc.).
-* `--temp`: Temperature for the contrastive loss.
+我们为无监督和有监督的SimCSE提供训练脚本的例子。在`run_unsup_example.sh`中，我们为无监督版本提供了一个单GPU（或CPU）的例子，在`run_sup_example.sh`中，我们为有监督版本提供了一个**多GPU的例子。两个脚本都调用`train.py`进行训练。我们在下面解释参数。
+* `--train_file`: 训练文件路径。我们支持 "txt "文件（一行代表一个句子）和 "csv "文件（2栏：没有困难负样本的配对数据；3栏：有一个相应的困难负样本实例的配对数据）。你可以使用我们提供的维基百科或NLI数据，也可以使用你自己的相同格式的数据。
+* `--model_name_or_path`: 预训练好的checkpoint开始使用。目前，我们支持BERT-base的模型 (`bert-base-uncased`, `bert-large-uncased`, etc.) and RoBERTa-based models (`RoBERTa-base`, `RoBERTa-large`, etc.).
+* `--temp`: 对比性损失的温度。
 * `--pooler_type`: Pooling method. It's the same as the `--pooler_type` in the [evaluation part](#evaluation).
-* `--mlp_only_train`: We have found that for unsupervised SimCSE, it works better to train the model with MLP layer but test the model without it. You should use this argument when training unsupervised SimCSE models.
-* `--hard_negative_weight`: If using hard negatives (i.e., there are 3 columns in the training file), this is the logarithm of the weight. For example, if the weight is 1, then this argument should be set as 0 (default value).
-* `--do_mlm`: Whether to use the MLM auxiliary objective. If True:
-  * `--mlm_weight`: Weight for the MLM objective.
-  * `--mlm_probability`: Masking rate for the MLM objective.
+* `--mlp_only_train`: 我们发现，对于无监督的SimCSE来说，用MLP层训练模型，但不测试模型，效果更好。在训练无监督的SimCSE模型时，你应该使用这个参数。
+* `--hard_negative_weight`: 如果使用困难负样本（即训练文件中有3列），这就是权重的对数。例如，如果权重是1，那么这个参数应该被设置为0（默认值）。
+* `--do_mlm`: 是否使用MLM辅助目标。如果为真。
+  * `--mlm_weight`: MLM目标的权重。
+  * `--mlm_probability`: MLM目标的masked率。
 
-All the other arguments are standard Huggingface's `transformers` training arguments. Some of the often-used arguments are: `--output_dir`, `--learning_rate`, `--per_device_train_batch_size`. In our example scripts, we also set to evaluate the model on the STS-B development set (need to download the dataset following the [evaluation](#evaluation) section) and save the best checkpoint.
+所有其他参数都是标准的Huggingface的`transformers'训练参数。
+一些经常使用的参数是。`--output_dir`, `--learning_rate`, `--per_device_train_batch_size`。
+在我们的例子脚本中，我们还设置了在STS-B开发集上评估模型（需要在[evaluation](#evaluation)部分之后下载数据集）并保存最佳checkpoint。
 
-For results in the paper, we use Nvidia 3090 GPUs with CUDA 11. Using different types of devices or different versions of CUDA/other softwares may lead to slightly different performance.
+对于本文的结果，我们使用Nvidia 3090 GPU和CUDA 11。使用不同类型的设备或不同版本的CUDA/其他软件可能会导致性能略有不同。
 
 **Hyperparameters**
-
-We use the following hyperparamters for training SimCSE:
+我们使用以下超参数器来训练SimCSE。
 
 |               | Unsup. BERT | Unsup. RoBERTa | Sup.      |
 |:--------------|:-----------:|:--------------:|:---------:|
@@ -245,10 +239,8 @@ We use the following hyperparamters for training SimCSE:
 
 
 **Convert models**
-
-Our saved checkpoints are slightly different from Huggingface's pre-trained checkpoints. Run `python simcse_to_huggingface.py --path {PATH_TO_CHECKPOINT_FOLDER}` to convert it. After that, you can evaluate it by our [evaluation](#evaluation) code or directly use it [out of the box](#use-our-models-out-of-the-box).
-
-
+我们保存的checkpoint与Huggingface的预训练checkpoint略有不同。运行`python simcse_to_huggingface.py --path {PATH_TO_CHECKPOINT_FOLDER}`来转换它。
+之后，你可以通过我们的[评估](#evaluation)代码来评估它，或者直接使用它[out of the box](#use-our-models-out-of-the-box)。
 
 ## Bugs or questions?
 
