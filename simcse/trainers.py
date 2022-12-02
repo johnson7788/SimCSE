@@ -72,7 +72,7 @@ if version.parse(torch.__version__) >= version.parse("1.6"):
 if is_datasets_available():
     import datasets
 
-from transformers.trainer import _model_unwrap
+# from transformers.trainer import _model_unwrap
 from transformers.optimization import Adafactor, AdamW, get_scheduler
 import copy
 # Set path to SentEval
@@ -87,6 +87,13 @@ from datetime import datetime
 from filelock import FileLock
 
 logger = logging.get_logger(__name__)
+
+def _model_unwrap(model: nn.Module) -> nn.Module:
+    # since there could be multiple levels of wrapping, unwrap recursively
+    if hasattr(model, "module"):
+        return _model_unwrap(model.module)
+    else:
+        return model
 
 class CLTrainer(Trainer):
 
@@ -329,7 +336,7 @@ class CLTrainer(Trainer):
             model = torch.nn.DataParallel(model)
 
         # Distributed training (should be after apex fp16 initialization)
-        if self.sharded_dpp:
+        if self.sharded_ddp:
             model = ShardedDDP(model, self.optimizer)
         elif self.args.local_rank != -1:
             model = torch.nn.parallel.DistributedDataParallel(

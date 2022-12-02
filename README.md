@@ -81,7 +81,7 @@ results = model.search("He plays guitar.")
 [repo](https://github.com/princeton-nlp/DensePhrases)和[demo](http://densephrases.korea.ac.kr)（非常感谢DensePhrases的作者）。
 
 ## Model List
-我们已经发布的模型列举如下。你可以通过使用`simcse`包或使用[HuggingFace's Transformers]（https://gi thub.com/huggingface/transformers）导入这些模型。
+我们已经发布的模型列举如下。你可以通过使用`simcse`包或使用[HuggingFace's Transformers]（https://github.com/huggingface/transformers）导入这些模型。
 
 |              Model              | Avg. STS |
 |:-------------------------------|:--------:|
@@ -221,6 +221,9 @@ python evaluation.py \
 * `--do_mlm`: 是否使用MLM辅助目标。如果为真。
   * `--mlm_weight`: MLM目标的权重。
   * `--mlm_probability`: MLM目标的masked率。
+ 
+* 有监督run_unsup_example.sh 
+train.py --model_name_or_path bert-base-uncased --train_file data/nli_for_simcse.csv --output_dir result/my-sup-simcse-bert-base-uncased --num_train_epochs 3 --per_device_train_batch_size 128 --learning_rate 5e-5 --max_seq_length 32 --evaluation_strategy steps --metric_for_best_model stsb_spearman --load_best_model_at_end --eval_steps 125 --pooler_type cls --overwrite_output_dir --temp 0.05 --do_train --do_eval --fp16
 
 所有其他参数都是标准的Huggingface的`transformers'训练参数。
 一些经常使用的参数是。`--output_dir`, `--learning_rate`, `--per_device_train_batch_size`。
