@@ -74,7 +74,7 @@ model.build_index(sentences)
 results = model.search("He plays guitar.")
 ```
 
-我们也支持[faiss](https://gi thub.com/facebookresearch/faiss)，一个高效的相似度搜索库。只要按照这里的[说明](https://gi thub.com/princeton-nlp/SimCSE/wiki/Installation)安装软件包，`simcse`将自动使用`faiss`进行高效搜索。
+我们也支持[faiss](https://gi thub.com/facebookresearch/faiss)，一个高效的相似度搜索库。只要按照这里的[说明](https://github.com/princeton-nlp/SimCSE/wiki/Installation)安装软件包，`simcse`将自动使用`faiss`进行高效搜索。
 
 **警告**。我们发现`faiss`不能很好地支持Nvidia AMPERE GPU（3090和A100）。在这种情况下，你应该改用其他GPU或安装CPU版本的`faiss`包。
 我们还提供了一个易于构建的[演示网站](./demo)来展示SimCSE如何用于句子检索。该代码基于[DensePhrases](https://arxiv.org/abs/2012.12624)' 

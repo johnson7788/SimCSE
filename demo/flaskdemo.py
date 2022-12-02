@@ -44,10 +44,11 @@ def run_simcse_demo(port, args):
         threshold = float(request.args['threshold'])
         start = time()
         results = embedder.search(query, top_k=top_k, threshold=threshold)
+        print(results)
         ret = []
         out = {}
         for sentence, score in results:
-            ret.append({"sentence": sentence, "score": score})
+            ret.append({"sentence": sentence, "score": str(score)})
         span = time() - start
         out['ret'] = ret
         out['time'] = "{:.4f}".format(span)

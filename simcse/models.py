@@ -168,7 +168,8 @@ def cl_forward(cls,
         z3 = pooler_output[:, 2]
 
     # Gather all embeddings if using distributed training
-    if dist.is_initialized() and cls.training:
+    # 替换dist.is_initialized() 为 dist.is_available()
+    if dist.is_available() and cls.training:
         # Gather hard negative
         if num_sent >= 3:
             z3_list = [torch.zeros_like(z3) for _ in range(dist.get_world_size())]
